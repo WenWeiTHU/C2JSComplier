@@ -29,7 +29,6 @@ reserved = {
     'false': 'FALSE',
 }
 
-# List of token names.
 tokens = [
     'PLUS',
     'MINUS',
@@ -127,7 +126,7 @@ t_LSQUARE = r'\['
 t_RSQUARE = r'\]'
 
 
-# A regular expression rule with some action code
+# regular expression rules, with some actions
 
 
 def t_IDENTIFIER(t):
