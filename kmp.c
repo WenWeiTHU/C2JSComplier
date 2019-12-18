@@ -36,7 +36,7 @@ void KMP(char temp[],char str[]){
         }
         if(j+1==strlen(temp)){
             flag = 1;
-            printf("%d,",i-j);
+            printf("%d ",i-j);
             j = next[j+1]-1;
         }
     }

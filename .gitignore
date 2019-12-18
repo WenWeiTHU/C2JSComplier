@@ -1,9 +1,5 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 .idea/
-node_modules/
 *.js
 parser.out
 parsetab.py
-
-
