@@ -1,0 +1,168 @@
+
+# 解析C语言的文法
+# 其实yacc.py里面每一个函数都做一样的事
+# 新建一个 type=左边文法符号的名字 的节点
+# 把产生式式右边的每一个文法符号，作为产生式左边的文法符号的孩子
+# 最后解析完，如果语法没问题，返回一个ast(其实就是一个Node), 它的 type=program
+# 它的孩子 ast.children = [<yacc.xxx>, <yacc.xxx>]
+# ast.children[0].type = function, ast.children[1].type = functions
+# 所以在program_gen里面只要根据传入的ast的所有children的type，把这个children传给相应的xxx_gen就行
+# 一个Node具体是使用一条规则的哪一个产生式根据children的长度或者某个children的type判断就行
+# 如果 ast.children = [<yacc.xxx>, xxx, ...]
+# 说明ast.children[1]是一个终结符(它不是Node,所以没有type属性)，将他传给terminatore_gen就好，本质就是一个str转化
+
+
+# 附现在的语法规则
+# 这里program只能放在最前面，表示文法的起始符号
+
+program : functions
+        | e
+
+e :
+
+functions : function
+        | function functions
+
+function : func_ret IDENTIFIER LPAREN params RPAREN block
+         | func_ret IDENTIFIER LPAREN RPAREN block
+
+func_ret : VOID
+         | var_type
+
+var_type : INT
+          | DOUBLE
+          | FLOAT
+          | CHAR
+
+# params是函数定义的参数
+# 后面的args是指调用函数时的参数
+params : param
+        | param COMMA params
+
+param : var_type IDENTIFIER
+      | var_type IDENTIFIER LSQUARE RSQUARE
+
+block : LBRACE e RBRACE
+      | LBRACE statements RBRACE
+
+# 特别地，如果要加C语法没有的特性，特别是新的语句，在statement这里可以做文章
+statements : statement
+           | statement statements
+
+statement : declaration SEMICOLON
+          | expression SEMICOLON
+          | return SEMICOLON
+          | BREAK SEMICOLON
+          | CONTINUE SEMICOLON
+          | for_block
+          | while_block
+          | do_while_block
+          | if_block
+          | switch_block
+
+switch_block : SWITCH LPAREN expression RPAREN LBRACE case_blocks RBRACE
+
+case_blocks : e
+            | default_block
+            | case_block case_blocks
+
+case_block : CASE expression COLON block
+
+default_block : DEFAULT COLON block
+
+if_block : IF LPAREN expression RPAREN block elif_blocks
+
+elif_blocks : e
+            | else_block
+            | elif_block elif_blocks
+
+elif_block : ELSE IF LPAREN expression RPAREN block
+
+else_block : ELSE block
+
+for_block : FOR LPAREN for_init SEMICOLON for_cond SEMICOLON for_update RPAREN block
+
+for_init : e
+         | declaration
+         | expression
+
+for_cond : e
+         | expression
+
+for_update : e
+           | expression
+
+while_block : WHILE LPAREN expression RPAREN block
+
+do_while_block : DO block WHILE LPAREN expression RPAREN
+
+expression : LPAREN expression RPAREN
+           | expression operator expression
+           | unary expression
+           | expression unary
+           | operand
+
+operator : operator_calc
+         | operator_boolean
+         | operator_bit
+         | operator_cond
+
+operator_calc : PLUS
+              | MINUS
+              | MULTI
+              | DIVIDE
+              | EQUAL
+              | PLUSEQU
+              | MINUSEQU
+              | MULTIEQU
+              | DIVIDEQU
+  
+operator_boolean : AND
+                 | OR
+                 | NOT
+
+operator_bit : BAND
+              | BOR
+              | BANDEQU
+              | BOREQU
+              | INV
+
+operator_cond : CEQ
+              | CNEQ
+              | CGT
+              | CLT
+              | CGE
+              | CLE
+
+operand : IDENTIFIER
+        | variable
+        | IDENTIFIER LSQUARE expression RSQUARE
+
+return : RETURN expression
+       | RETURN
+
+declaration : var_type IDENTIFIER
+            | var_type IDENTIFIER EQUAL expression
+            | var_type IDENTIFIER LSQUARE NUMBER RSQUARE
+            | var_type IDENTIFIER LSQUARE NUMBER RSQUARE EQUAL expression
+
+unary : NOT
+      | INV
+      | PLUSELF
+      | MINUSELF
+
+variable : NUMBER
+          | MINUS NUMBER
+          | DECIMAL
+          | MINUS DECIMAL
+          | CHARACTER
+          | STRING
+          | TRUE
+          | FALSE
+          | func_call
+
+func_call : IDENTIFIER LPAREN args RPAREN
+          | IDENTIFIER LPAREN RPAREN
+
+args : expression
+      | expression COMMA args
