@@ -6,8 +6,8 @@
 
 
 
-* palindrome.c已经完成
-* kmp.c,calculator.c暂时用学长的代码（去掉了getLength）,之后要改成我们自己的
+* palindrome.c, kmp.c已经完成
+* calculator.c暂时用学长的代码（去掉了getLength）,之后要改成我们自己的
 
 
 
@@ -25,3 +25,7 @@
 
 ## 可能的改进
 * 预处理功能，增加include语句（本地文件），宏定义
+
+# 发现的问题，不改也没多大问题
+①才发现已经有提过了，数组无法赋初值
+②数组参数的传递必须类似char s[]，而不能是char* s。
