@@ -26,8 +26,7 @@
   > s=new Array()
   > s=['a','b','c','\0']
 
-* palindrome.c, kmp.c已经完成
-* calculator.c暂时用学长的代码（去掉了getLength）,之后要改成我们自己的
+* palindrome.c, kmp.c , calculator.c已经完成
 
 
 
