@@ -1,21 +1,30 @@
 #include <stdio.h>
-#include <string.h>
+
+int getLength(char str[]){
+    int i = 0;
+    int length = 0;
+    while (str[i]!='\0'){
+        length++;
+        i++;
+    }
+    return length;
+}
 
 char pop(char stack[]){
-    int len = strlen(stack);
+    int len = getLength(stack);
     char ret = stack[len-1];
     stack[len-1] = '\0';
     return ret;
 }
 
 void push(char stack[],char ch){
-    int len = strlen(stack);
+    int len = getLength(stack);
     stack[len] = ch;
     stack[len+1] = '\0';
 }
 
 char top(char stack[]){
-    int len = strlen(stack);
+    int len = getLength(stack);
     return stack[len-1];
 }
 
@@ -27,7 +36,7 @@ int is_empty(char stack[]){
 }
 
 int suffix_exp(char exp[], char suffix[]){
-    int len = strlen(exp);
+    int len = getLength(exp);
     char stack[102];
     stack[0] = '\0';
     push(stack,'#');
@@ -122,7 +131,7 @@ void calculate(char exp[]){
     int array[200];
     int j=0;
     char ch;
-    for (int i = 0; i < strlen(suffix)-1; i++) {
+    for (int i = 0; i < getLength(suffix)-1; i++) {
         ch = suffix[i];
         switch (ch){
             case '+':{
@@ -166,6 +175,7 @@ void calculate(char exp[]){
 
 int main(){
     char exp[201];
+    printf("exp:");
     gets(exp);
     push(exp,'#');
     calculate(exp);
