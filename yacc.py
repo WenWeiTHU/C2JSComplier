@@ -46,6 +46,7 @@ def p_function(p):
 def p_func_ret(p):
     '''
     func_ret : VOID
+             | ARRAY
              | var_type
     '''
     p[0] = Node('function return', pchildren(p))
@@ -56,6 +57,7 @@ def p_var_type(p):
              | DOUBLE
              | FLOAT
              | CHAR
+             | BOOL
     '''
     p[0] = Node('value type', pchildren(p))
 
@@ -70,6 +72,7 @@ def p_param(p):
     '''
     param : var_type IDENTIFIER
           | var_type IDENTIFIER LSQUARE RSQUARE
+          | ARRAY IDENTIFIER
     '''
     p[0] = Node('param', pchildren(p))
 
@@ -277,8 +280,18 @@ def p_declaration(p):
                 | var_type IDENTIFIER EQUAL expression
                 | var_type IDENTIFIER LSQUARE NUMBER RSQUARE
                 | var_type IDENTIFIER LSQUARE NUMBER RSQUARE EQUAL expression
+                | ARRAY IDENTIFIER
+                | ARRAY IDENTIFIER EQUAL LBRACE RBRACE
+                | ARRAY IDENTIFIER EQUAL LBRACE aggregation RBRACE
     '''
     p[0] = Node('declaration', pchildren(p))
+
+def p_aggregation(p):
+    '''
+    aggregation : variable
+                | variable COMMA aggregation
+    '''
+    p[0] = Node('aggregation', pchildren(p))
 
 def p_unary(p):
     '''
