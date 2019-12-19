@@ -1,205 +1,173 @@
 #include <stdio.h>
 #include <string.h>
 
+char pop(char stack[]){
+    int len = strlen(stack);
+    char ret = stack[len-1];
+    stack[len-1] = '\0';
+    return ret;
+}
 
-int trans(char exp[],char postexp[]){
+void push(char stack[],char ch){
+    int len = strlen(stack);
+    stack[len] = ch;
+    stack[len+1] = '\0';
+}
+
+char top(char stack[]){
+    int len = strlen(stack);
+    return stack[len-1];
+}
+
+int is_empty(char stack[]){
+    if(stack[0]=='\0'){
+        return 0;
+    }
+    return 1;
+}
+
+int suffix_exp(char exp[], char suffix[]){
+    int len = strlen(exp);
+    char stack[102];
+    stack[0] = '\0';
+    push(stack,'#');
     char ch;
-    int i=0;
-    int j=0;
-    int stack[100];
-    int top=0;
-    top=-1;
-    ch=exp[i]; i++;
-
-    int current = 0;
-    int length = strlen(exp);
-
-    for (i=1;i<=length;)
-    {
-        switch(ch){
-            case '(':
-            {
-                if (current == 1) {
-                    return 1;
-                }
-
-                top++; stack[top]=ch;
-                break;
-            }
-            case ')':
-            {
-                if (current == 0) {
-                    return 1;
-                }
-
-                while(stack[top]!='(')
-                {
-                    postexp[j]=stack[top]; j++;
-                    top--;
-                }
-                top--;
-                break;
-            }
+    char first;
+    for (int i = 0; i < len-1; ++i) {
+        ch = exp[i];
+        switch (ch){
             case '+':{
             }
             case '-':{
-                if (current == 0) {
-                    return 1;
+                first = top(stack);
+                if(first == '#' || first == '('){
+                    push(stack,ch);
                 }
-
-                while (top!=-1 && stack[top]!='(')
-                {
-                    postexp[j]=stack[top]; j++;
-                    top--;
+                else{
+                    first = pop(stack);
+                    while (first!='#' && first!='('){
+                        push(suffix,first);
+                        first = pop(stack);
+                    }
+                    push(stack,first);
+                    push(stack,ch);
                 }
-                top++; stack[top]=ch;
-
-                current = 0;
                 break;
             }
             case '*':{
             }
             case '/':{
-                if (current == 0) {
-                    return 1;
+                first = top(stack);
+                if(first == '#' || first == '(' || first == '+' || first == '-'){
+                    push(stack,ch);
                 }
-
-                while(top!=-1 && stack[top]!='('
-                    && (stack[top]=='*' || stack[top]=='/')){
-                    postexp[j]=stack[top]; j++;
-                    top--;
+                else{
+                    first = pop(stack);
+                    while (first != '#' && first != '(' && first != '+' && first != '-'){
+                        push(suffix,first);
+                        first = pop(stack);
+                    }
+                    push(stack,first);
+                    push(stack,ch);
                 }
-                top++; stack[top]=ch;
-
-                current = 0;
                 break;
             }
-            case ' ': {
+            case '(':{
+                push(stack,ch);
+                break;
+            }
+            case ')':{
+                first = pop(stack);
+                while (first != '#' && first != '('){
+                    push(suffix,first);
+                    first = pop(stack);
+                }
+                if(first == '#'){
+                    return 0;
+                }
                 break;
             }
             default:{
-                if (current == 1) {
-                    return 1;
+                if(ch>'9' || ch<'0'){
+                    return 0;
                 }
-
-                if (ch<'0' || ch>'9'){
-                    return 1;
-                }
-
-
-
-                while (ch>='0' && ch<='9')
-                {
-                    postexp[j]=ch;
-                    j++;
-                    ch=exp[i];
+                while('0'<=ch && ch<='9'){
+                    push(suffix,ch);
                     i++;
+                    ch = exp[i];
                 }
+                push(suffix,' ');
                 i--;
-                postexp[j]='#'; j++;
-
-                current = 1;
                 break;
             }
         }
-        ch=exp[i]; i++;
     }
-
-    if (current == 0){
-        return 1;
+    first = pop(stack);
+    while (first != '#'){
+        push(suffix,first);
+        first = pop(stack);
     }
-
-
-    while(top!=-1){
-        postexp[j]=stack[top]; j++;
-        top--;
-    }
-    postexp[j]='\0';
-
-    return 0;
+    return 1;
 }
 
-int compvalue(char postexp[]){
-    int d;
+void calculate(char exp[]){
+    char suffix[401];
+    int temp=0;
+    suffix[0] = '\0';
+    int ret = suffix_exp(exp,suffix);
+    push(suffix,'#');
+    if(ret == 0){
+        printf("Wrong Format!");
+    }
+    int array[200];
+    int j=0;
     char ch;
-    int i=0;
-    int stack[100];
-    int top;
-    top=-1;
-    ch=postexp[i]; i++;
-
-    int length = strlen(postexp);
-
-    for (i=1;i<=length;)
-    {
-        switch(ch){
-            case '+': {
-                stack[top-1]=stack[top-1]+stack[top];
-                top--; break;
+    for (int i = 0; i < strlen(suffix)-1; i++) {
+        ch = suffix[i];
+        switch (ch){
+            case '+':{
+                array[j-2] = array[j-2]+array[j-1];
+                j--;
+                break;
             }
-            case '-': {
-                stack[top-1]=stack[top-1]-stack[top];
-                top--; break;
+            case '-':{
+                array[j-2] = array[j-2]-array[j-1];
+                j--;
+                break;
             }
-            case '*': {
-                stack[top-1]=stack[top-1]*stack[top];
-                top--; break;
+            case '*':{
+                array[j-2] = array[j-2]*array[j-1];
+                j--;
+                break;
             }
-            case '/': {
-                if(stack[top]!=0) {
-                    stack[top-1]=stack[top-1]/stack[top];
+            case '/':{
+                array[j-2] = array[j-2]/array[j-1];
+                j--;
+                break;
+            }
+            default:{
+                while('0'<=ch && ch<='9'){
+                    temp = temp*10 + ch - '0';
+                    i++;
+                    ch = suffix[i];
                 }
-                else{
-                    printf("\n\tdivide by 0 error!\n");
-                    return -10000000;
+                array[j] = temp;
+                j++;
+                temp = 0;
+                if(ch == '#'){
+                    i--;
                 }
-                top--; break;
-            }
-            default: {
-                d=0;
-                while (ch>='0' && ch<='9')
-                {
-                    d=10*d+(ch-'0');
-                    ch=postexp[i]; i++;
-                }
-                top++;
-                stack[top]=d;
+                break;
             }
         }
-        ch=postexp[i];
-        i++;
     }
-
-    return stack[top];
+    printf("%d",array[0]);
 }
 
-int calc(char s[]) {
-    int len = strlen(s);
-    int i=0;
-
-    char postexp[100];
-    int flag = trans(s,postexp);
-    if (flag == 0){
-        printf("postexp = %s\n",postexp);
-    }
-    else {
-        printf("Bad Exp\n");
-        return 0;
-    }
-    int result = compvalue(postexp);
-
-    return result;
-}
-
-int main() {
-    char s[100];
-    int result;
-
-    printf("Please input a expression: ");
-    gets(s);
-    result = calc(s);
-    printf("Result: %d\n", result);
-
+int main(){
+    char exp[201];
+    gets(exp);
+    push(exp,'#');
+    calculate(exp);
     return 0;
 }
-
