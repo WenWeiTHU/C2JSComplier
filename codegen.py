@@ -276,7 +276,7 @@ def declaration_gen(ast):
         return code
 
     if len(ast.children) < 5:
-         if ast.children[-1].type == 'expression' :
+        if ast.children[-1].type == 'expression' :
             code += ' = ' + expression_gen(ast.children[3])
         elif ast.children[-1].type == 'lambda' :
             code += ' = ' + lambda_gen(ast.children[3])

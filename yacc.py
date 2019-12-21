@@ -345,12 +345,6 @@ def p_args(p):
     '''
     p[0] = Node('args', pchildren(p))
 
-# def p_lambda_call(p):
-#     '''
-#     lambda_call : LPAREN lambda RPAREN LPAREN RPAREN
-#                 | LPAREN lambda RPAREN LPAREN args RPAREN
-#     '''
-#     p[0] = Node('lambda_call', pchildren(p))
 
 def p_lambda(p):
     '''
