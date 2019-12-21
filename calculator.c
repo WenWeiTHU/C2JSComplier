@@ -156,7 +156,7 @@ void calculate(char exp[]){
             }
             default:{
                 while('0'<=ch && ch<='9'){
-                    temp = temp*10 + ch - '0';
+                    temp = temp*10 + (ch - '0');
                     i++;
                     ch = suffix[i];
                 }
