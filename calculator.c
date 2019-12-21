@@ -36,7 +36,7 @@ int is_empty(char stack[]){
 }
 
 int suffix_exp(char exp[], char suffix[]){
-    int len = strlen(exp);
+    int len = getStackLength(exp);
     char stack[102];
     stack[0] = '\0';
     push(stack,'#');
@@ -131,7 +131,7 @@ void calculate(char exp[]){
     int arr[200];
     int j=0;
     char ch;
-    for (int i = 0; i < strlen(suffix)-1; i++) {
+    for (int i = 0; i < getStackLength(suffix)-1; i++) {
         ch = suffix[i];
         switch (ch){
             case '+':{
@@ -156,7 +156,7 @@ void calculate(char exp[]){
             }
             default:{
                 while('0'<=ch && ch<='9'){
-                    temp = temp*10 + ch - '0';
+                    temp = temp*10 + (ch - '0');
                     i++;
                     ch = suffix[i];
                 }
