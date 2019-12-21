@@ -93,6 +93,7 @@ def p_statements(p):
 def p_statement(p):
     '''
     statement : declaration SEMICOLON
+              | lambda_call SEMICOLON
               | expression SEMICOLON
               | return SEMICOLON
               | BREAK SEMICOLON
@@ -102,6 +103,8 @@ def p_statement(p):
               | do_while_block
               | if_block
               | switch_block
+              | for_in_block
+              | for_of_block
     '''
     p[0] = Node('statement', pchildren(p))
 
@@ -184,6 +187,18 @@ def p_for_update(p):
                | expression
     '''
     p[0] = Node('for_update', pchildren(p))
+
+def p_for_in_block(p):
+    '''
+    for_in_block : FOR LPAREN IDENTIFIER IN IDENTIFIER RPAREN block
+    '''
+    p[0] = Node('for_in_block', pchildren(p))
+
+def p_for_of_block(p):
+    '''
+    for_of_block : FOR LPAREN IDENTIFIER OF IDENTIFIER RPAREN block
+    '''
+    p[0] = Node('for_of_block', pchildren(p))
 
 def p_while_block(p):
     '''
@@ -278,6 +293,7 @@ def p_declaration(p):
     '''
     declaration : var_type IDENTIFIER
                 | var_type IDENTIFIER EQUAL expression
+                | var_type IDENTIFIER EQUAL LPAREN lambda RPAREN
                 | var_type IDENTIFIER LSQUARE NUMBER RSQUARE
                 | var_type IDENTIFIER LSQUARE NUMBER RSQUARE EQUAL expression
                 | ARRAY IDENTIFIER
@@ -329,6 +345,20 @@ def p_args(p):
          | expression COMMA args
     '''
     p[0] = Node('args', pchildren(p))
+
+def p_lambda_call(p):
+    '''
+    lambda_call : LPAREN lambda RPAREN LPAREN RPAREN
+                | LPAREN lambda RPAREN LPAREN args RPAREN
+    '''
+    p[0] = Node('lambda_call', pchildren(p))
+
+def p_lambda(p):
+    '''
+    lambda : LPAREN RPAREN GOTO block
+           | LPAREN params RPAREN GOTO block
+    '''
+    p[0] = Node('lambda', pchildren(p))
 
 def parser():
     return yacc.yacc(debug=True)

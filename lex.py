@@ -19,6 +19,8 @@ reserved = {
 
     # branch
     'for': 'FOR',
+    'in': 'IN',
+    'of': 'OF',
     'while': 'WHILE',
     'do': 'DO',
     'if': 'IF',
@@ -84,6 +86,8 @@ tokens = [
     'COMMETLINE',
     'COMMETBLOCK',
     'INCLUDE',
+    
+    'GOTO',
 ] + list(reserved.values())
 
 t_COMMA = r','
@@ -127,6 +131,10 @@ t_LBRACE = r'{'
 t_RBRACE = r'}'
 t_LSQUARE = r'\['
 t_RSQUARE = r'\]'
+
+
+t_GOTO = r'=>'
+
 
 
 # regular expression rules, with some actions
