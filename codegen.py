@@ -96,8 +96,6 @@ def statement_gen(ast):
         code += if_block_gen(ast.children[0])
     elif ast.children[0].type == 'switch_block':
         code += switch_block_gen(ast.children[0])
-    elif ast.children[0].type == 'lambda_call':
-        code += lambda_call_gen(ast.children[0])
     elif ast.children[0].type == 'for_in_block':
         code += for_in_block_gen(ast.children[0])
     elif ast.children[0].type == 'for_of_block':
@@ -224,20 +222,20 @@ def for_update_gen(ast):
 
 def for_in_block_gen(ast):
     code = 'for(let '
-    code += terminator_gen(ast.children[2])
+    code += terminator_gen(ast.children[3])
     code += ' in '
-    code += terminator_gen(ast.children[4])
+    code += terminator_gen(ast.children[5])
     code += ')'
-    code += block_gen(ast.children[6])
+    code += block_gen(ast.children[7])
     return code
 
 def for_of_block_gen(ast):
     code = 'for(let '
-    code += terminator_gen(ast.children[2])
+    code += terminator_gen(ast.children[3])
     code += ' of '
-    code += terminator_gen(ast.children[4])
+    code += terminator_gen(ast.children[5])
     code += ')'
-    code += block_gen(ast.children[6])
+    code += block_gen(ast.children[7])
     return code
 
 def while_block_gen(ast):
@@ -278,18 +276,16 @@ def declaration_gen(ast):
         return code
 
     if len(ast.children) < 5:
-        code += ' = ' + expression_gen(ast.children[3])
+        if ast.children[-1].type == 'expression' :
+            code += ' = ' + expression_gen(ast.children[3])
+        elif ast.children[-1].type == 'lambda' :
+            code += ' = ' + lambda_gen(ast.children[3])
     elif len(ast.children) == 5:
         code += ' = new Array()'
     elif len(ast.children) == 6:
-        if terminator_gen(ast.children[0]) == 'array':
-            code += ' = ['
-            code += aggregation_gen(ast.children[4])
-            code += ']'
-        else:  # lambda
-            code += ' = ('
-            code += lambda_gen(ast.children[4])
-            code += ')'
+        code += ' = ['
+        code += aggregation_gen(ast.children[4])
+        code += ']'  
     elif len(ast.children) == 7:
         code += ' = new Array()'
         str = expression_gen(ast.children[6])
@@ -312,8 +308,10 @@ def lambda_call_gen(ast):
 
 def lambda_gen(ast):
     code = '('
-    if len(ast.children) == 5:
+    if hasattr(ast.children[1], 'type'):
         code += params_gen(ast.children[1])
+    else:
+        code += params_gen(ast.children[3])
     code += ') => '
     code += block_gen(ast.children[-1])
     return code

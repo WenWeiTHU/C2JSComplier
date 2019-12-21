@@ -1,21 +1,11 @@
 
 int main(){
-    (()=>{
-        printf("GOOD!\n");
-    })();
 
-    ((int x,int y,int z)=>{
-        x = x*2;
-        y = y - 3;
-        z = z+1;
-        printf("%d %d %d\n",x,y,z);
-    })(1+5,2,3);
+    auto f1 = [](int x, int y, int z){return x*y*z;};
+    int tmp1 = f1(2,3,4);
+    printf("%d ",tmp1);
 
-
-     int a = ((int x,int y,int z)=>{
-        int p = x*y*z;
-        return p;
-    });
-    int tmp = a(2,3,4);
-    printf("%d",tmp);
+    auto f2 = (int x, int y) -> int { int z = x + y; return z; };
+    int tmp2 = f2(5,10);
+    printf("%d ",tmp2);
 }
