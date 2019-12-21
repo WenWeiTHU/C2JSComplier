@@ -58,7 +58,7 @@ int main(){
     printf("\nreversed: ");
     printArray(test);
 
-    int n = 2;
+    int n = 100;
     printf("\nprimes <= %d: ", n);
     printArray(genPrime(n));
 }
