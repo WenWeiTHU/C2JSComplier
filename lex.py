@@ -8,6 +8,9 @@ reserved = {
     'float': 'FLOAT',
     'char': 'CHAR',
     'void': 'VOID',
+    'bool': 'BOOL',
+    'auto': 'AUTO',
+    'array': 'ARRAY',
 
     # control
     'return': 'RETURN',

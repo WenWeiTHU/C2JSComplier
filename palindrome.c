@@ -17,10 +17,10 @@ void isPalindrome(char input[]) {
 int main() {
 	char input[100];
 
-    printf("Input a string: ");
+	printf("input a string: ");
 	gets(input);
-    isPalindrome(input);
-    printf("\n");
+	isPalindrome(input);
+	printf("\n");
 
 	return 0;
 }

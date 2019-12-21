@@ -249,16 +249,33 @@ def declaration_gen(ast):
     code += identifier
 
     if len(ast.children) <= 3:
+        if terminator_gen(ast.children[0]) == 'array':
+            code += ' = new Array()'
         return code
 
     if len(ast.children) < 5:
         code += ' = ' + expression_gen(ast.children[3])
-    else:
+    elif len(ast.children) == 5:
         code += ' = new Array()'
-        if len(ast.children) > 6:
-            str = expression_gen(ast.children[6])
-            if str[0] == '"' and str[-1] == '"':
-                code += assign_array_gen(identifier, str[1: -1])
+    elif len(ast.children) == 6:
+        code += ' = ['
+        code += aggregation_gen(ast.children[4])
+        code += ']'
+    elif len(ast.children) == 7:
+        code += ' = new Array()'
+        str = expression_gen(ast.children[6])
+        if str[0] == '"' and str[-1] == '"':
+            code += assign_array_gen(identifier, str[1: -1])
+
+    return code
+
+def aggregation_gen(ast):
+    code = variable_gen(ast.children[0])
+    if len(ast.children) == 1:
+        return code
+    elif len(ast.children) > 1:
+        code += ', '
+        code += aggregation_gen(ast.children[2])
 
     return code
 
@@ -340,6 +357,8 @@ def func_call_gen(ast):
         code = gets_gen(code)
     elif func_name == 'strlen':
         code = strlen_gen(code)
+    elif func_name == 'lenA':
+        code = arraylen_gen(code)
 
     return code
 
@@ -385,6 +404,12 @@ def strlen_gen(code):
     # like ['H', 'e', 'l', 'l', 'o', '\0']
     # so strlen(s) = array.length - 1
     code = result + '.length-1'
+
+    return code
+
+def arraylen_gen(code):   
+    result = re.findall(r'lenA\((.*)\)', code)[0]
+    code = result + '.length'
 
     return code
 

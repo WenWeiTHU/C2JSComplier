@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-int getLength(char str[]){
+int getStackLength(char str[]){
     int i = 0;
     int length = 0;
     while (str[i]!='\0'){
@@ -11,32 +11,32 @@ int getLength(char str[]){
 }
 
 char pop(char stack[]){
-    int len = getLength(stack);
+    int len = getStackLength(stack);
     char ret = stack[len-1];
     stack[len-1] = '\0';
     return ret;
 }
 
 void push(char stack[],char ch){
-    int len = getLength(stack);
+    int len = getStackLength(stack);
     stack[len] = ch;
     stack[len+1] = '\0';
 }
 
 char top(char stack[]){
-    int len = getLength(stack);
+    int len = getStackLength(stack);
     return stack[len-1];
 }
 
 int is_empty(char stack[]){
-    if(stack[0]=='\0'){
+    if(getStackLength(stack) == 0){
         return 0;
     }
     return 1;
 }
 
 int suffix_exp(char exp[], char suffix[]){
-    int len = getLength(exp);
+    int len = strlen(exp);
     char stack[102];
     stack[0] = '\0';
     push(stack,'#');
@@ -128,29 +128,29 @@ void calculate(char exp[]){
     if(ret == 0){
         printf("Wrong Format!");
     }
-    int array[200];
+    int arr[200];
     int j=0;
     char ch;
-    for (int i = 0; i < getLength(suffix)-1; i++) {
+    for (int i = 0; i < strlen(suffix)-1; i++) {
         ch = suffix[i];
         switch (ch){
             case '+':{
-                array[j-2] = array[j-2]+array[j-1];
+                arr[j-2] = arr[j-2]+arr[j-1];
                 j--;
                 break;
             }
             case '-':{
-                array[j-2] = array[j-2]-array[j-1];
+                arr[j-2] = arr[j-2]-arr[j-1];
                 j--;
                 break;
             }
             case '*':{
-                array[j-2] = array[j-2]*array[j-1];
+                arr[j-2] = arr[j-2]*arr[j-1];
                 j--;
                 break;
             }
             case '/':{
-                array[j-2] = array[j-2]/array[j-1];
+                arr[j-2] = arr[j-2]/arr[j-1];
                 j--;
                 break;
             }
@@ -160,7 +160,7 @@ void calculate(char exp[]){
                     i++;
                     ch = suffix[i];
                 }
-                array[j] = temp;
+                arr[j] = temp;
                 j++;
                 temp = 0;
                 if(ch == '#'){
@@ -170,12 +170,12 @@ void calculate(char exp[]){
             }
         }
     }
-    printf("%d",array[0]);
+    printf("result: %d",arr[0]);
 }
 
 int main(){
     char exp[201];
-    printf("exp:");
+    printf("exp: ");
     gets(exp);
     push(exp,'#');
     calculate(exp);
