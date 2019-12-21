@@ -23,6 +23,10 @@ void getNext(char temp[],int next[]){
 }
 
 void KMP(char temp[],char str[]){
+    if(strlen(temp)==0){
+        printf("%d ",0);
+        return;
+    }
     int flag = 0;
     int next[101];
     getNext(temp,next);
