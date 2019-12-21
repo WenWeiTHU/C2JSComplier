@@ -103,6 +103,8 @@ def p_statement(p):
               | do_while_block
               | if_block
               | switch_block
+              | for_in_block
+              | for_of_block
     '''
     p[0] = Node('statement', pchildren(p))
 
@@ -185,6 +187,18 @@ def p_for_update(p):
                | expression
     '''
     p[0] = Node('for_update', pchildren(p))
+
+def p_for_in_block(p):
+    '''
+    for_in_block : FOR LPAREN IDENTIFIER IN IDENTIFIER RPAREN block
+    '''
+    p[0] = Node('for_in_block', pchildren(p))
+
+def p_for_of_block(p):
+    '''
+    for_of_block : FOR LPAREN IDENTIFIER OF IDENTIFIER RPAREN block
+    '''
+    p[0] = Node('for_of_block', pchildren(p))
 
 def p_while_block(p):
     '''

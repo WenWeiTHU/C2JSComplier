@@ -98,6 +98,10 @@ def statement_gen(ast):
         code += switch_block_gen(ast.children[0])
     elif ast.children[0].type == 'lambda_call':
         code += lambda_call_gen(ast.children[0])
+    elif ast.children[0].type == 'for_in_block':
+        code += for_in_block_gen(ast.children[0])
+    elif ast.children[0].type == 'for_of_block':
+        code += for_of_block_gen(ast.children[0])
 
     return code + '\n'
 
@@ -218,6 +222,24 @@ def for_update_gen(ast):
 
     return code
 
+def for_in_block_gen(ast):
+    code = 'for(let '
+    code += terminator_gen(ast.children[2])
+    code += ' in '
+    code += terminator_gen(ast.children[4])
+    code += ')'
+    code += block_gen(ast.children[6])
+    return code
+
+def for_of_block_gen(ast):
+    code = 'for(let '
+    code += terminator_gen(ast.children[2])
+    code += ' of '
+    code += terminator_gen(ast.children[4])
+    code += ')'
+    code += block_gen(ast.children[6])
+    return code
+
 def while_block_gen(ast):
     code = 'while('
     code += expression_gen(ast.children[2])
@@ -284,7 +306,7 @@ def lambda_call_gen(ast):
     code += '('
     if len(ast.children) == 6:
         code += args_gen(ast.children[4])
-    code += ')'
+    code += ');'
     return code
 
 

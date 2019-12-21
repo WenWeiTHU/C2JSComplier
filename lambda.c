@@ -8,7 +8,7 @@ int main(){
         x = x*2;
         y = y - 3;
         z = z+1;
-        printf("%d %d %d",x,y,z);
+        printf("%d %d %d\n",x,y,z);
     })(1+5,2,3);
 
 

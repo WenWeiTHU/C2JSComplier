@@ -19,6 +19,8 @@ reserved = {
 
     # branch
     'for': 'FOR',
+    'in': 'IN',
+    'of': 'OF',
     'while': 'WHILE',
     'do': 'DO',
     'if': 'IF',
