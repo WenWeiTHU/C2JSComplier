@@ -3,3 +3,4 @@ __pycache__/
 *.js
 parser.out
 parsetab.py
+*.pdf
