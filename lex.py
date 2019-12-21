@@ -132,9 +132,7 @@ t_RBRACE = r'}'
 t_LSQUARE = r'\['
 t_RSQUARE = r'\]'
 
-
-t_GOTO = r'=>'
-
+t_GOTO = r'->'
 
 
 # regular expression rules, with some actions

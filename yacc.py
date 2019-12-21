@@ -93,7 +93,6 @@ def p_statements(p):
 def p_statement(p):
     '''
     statement : declaration SEMICOLON
-              | lambda_call SEMICOLON
               | expression SEMICOLON
               | return SEMICOLON
               | BREAK SEMICOLON
@@ -190,13 +189,13 @@ def p_for_update(p):
 
 def p_for_in_block(p):
     '''
-    for_in_block : FOR LPAREN IDENTIFIER IN IDENTIFIER RPAREN block
+    for_in_block : FOR LPAREN AUTO IDENTIFIER IN IDENTIFIER RPAREN block
     '''
     p[0] = Node('for_in_block', pchildren(p))
 
 def p_for_of_block(p):
     '''
-    for_of_block : FOR LPAREN IDENTIFIER OF IDENTIFIER RPAREN block
+    for_of_block : FOR LPAREN AUTO IDENTIFIER OF IDENTIFIER RPAREN block
     '''
     p[0] = Node('for_of_block', pchildren(p))
 
@@ -293,7 +292,7 @@ def p_declaration(p):
     '''
     declaration : var_type IDENTIFIER
                 | var_type IDENTIFIER EQUAL expression
-                | var_type IDENTIFIER EQUAL LPAREN lambda RPAREN
+                | AUTO IDENTIFIER EQUAL lambda
                 | var_type IDENTIFIER LSQUARE NUMBER RSQUARE
                 | var_type IDENTIFIER LSQUARE NUMBER RSQUARE EQUAL expression
                 | ARRAY IDENTIFIER
@@ -346,17 +345,17 @@ def p_args(p):
     '''
     p[0] = Node('args', pchildren(p))
 
-def p_lambda_call(p):
-    '''
-    lambda_call : LPAREN lambda RPAREN LPAREN RPAREN
-                | LPAREN lambda RPAREN LPAREN args RPAREN
-    '''
-    p[0] = Node('lambda_call', pchildren(p))
+# def p_lambda_call(p):
+#     '''
+#     lambda_call : LPAREN lambda RPAREN LPAREN RPAREN
+#                 | LPAREN lambda RPAREN LPAREN args RPAREN
+#     '''
+#     p[0] = Node('lambda_call', pchildren(p))
 
 def p_lambda(p):
     '''
-    lambda : LPAREN RPAREN GOTO block
-           | LPAREN params RPAREN GOTO block
+    lambda : LSQUARE RSQUARE LPAREN params RPAREN block
+           | LPAREN params RPAREN GOTO var_type block
     '''
     p[0] = Node('lambda', pchildren(p))
 
