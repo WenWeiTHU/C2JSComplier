@@ -2,13 +2,25 @@ import sys
 from yacc import parser
 from codegen import program_gen
 
-
 if __name__ == '__main__':
-    with open(sys.argv[1], 'r') as infile:
+    if len(sys.argv) > 1:
+        with open(sys.argv[1], 'r') as infile:
+            parser = parser()
+            ast = parser.parse(infile.read())
+
+        # print(program_gen(ast))
+
+        with open(''.join(sys.argv[1].split('.')[:-1]) + '.js', 'w') as outfile:
+            outfile.write(program_gen(ast))
+    else:
         parser = parser()
-        ast = parser.parse(infile.read())
+        examples = {'calculator.c', 'palindrome.c', 'kmp.c', 'array.c', 'for_inof.c', 'lambda.c'}
+        for file in examples:
+            with open(file, 'r') as infile:
 
-    print(program_gen(ast))
+                ast = parser.parse(infile.read())
 
-    with open(''.join(sys.argv[1].split('.')[:-1]) + '.js', 'w') as outfile:
-        outfile.write(program_gen(ast))
+                # print(program_gen(ast))
+
+                with open(''.join(file.split('.')[:-1]) + '.js', 'w') as outfile:
+                    outfile.write(program_gen(ast))
